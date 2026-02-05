@@ -1,2 +1,21 @@
-# FiguRing
-Ring size measurements
+workflows:
+  android-workflow:
+    name: Android Build
+    max_build_duration: 60
+    instance_type: mac_mini_m1
+    environment:
+      node: 18
+      java: 17
+    scripts:
+      - name: Install dependencies
+        script: npm install
+      - name: Build web assets
+        script: npm run build
+      - name: Add Android platform
+        script: npx cap add android || true
+      - name: Sync Capacitor
+        script: npx cap sync android
+      - name: Build Android APK
+        script: cd android && ./gradlew assembleDebug
+    artifacts:
+      - android/app/build/outputs/**/*.apk
